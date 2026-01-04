@@ -1,3 +1,4 @@
 {
-    "liveServer.settings.multiRootWorkspaceName": "Project_hackathon"
+    "liveServer.settings.multiRootWorkspaceName": "Project_hackathon",
+    "liveServer.settings.port": 5502
 }

@@ -34,8 +34,8 @@
   <p class="auth-subtitle">BVM Alumni Portal</p>
 
   <div class="auth-tabs">
-    <button class="auth-tab active" onclick="switchTab('login')">Login</button>
-    <button class="auth-tab" onclick="switchTab('register')">Register</button>
+    <button class="auth-tab active" onclick="switchTab('login', event)">Login</button>
+    <button class="auth-tab" onclick="switchTab('register', event)">Register</button>
   </div>
 
 
@@ -138,29 +138,85 @@
           </div>
 
           <!-- Office Hours Roulette View -->
-          <div id="rouletteView" class="view-page" style="display:none;">
-            <h2>🎯 Office Hours Roulette</h2>
-            <div class="card">
-              <!-- Alumni: Go Live -->
-              <div id="alumniRoulette" style="display:none;">
-                <h3>Become Available</h3>
-                <label>
-                  <input type="checkbox" id="alumniLiveToggle">
-                  I'm Live for 5-min questions
-                </label>
-                <input id="alumniDefaultQuestion" class="form-input" placeholder="Default question hint">
-                <button id="btnUpdateLive" class="btn btn-primary full-width">Update Status</button>
-              </div>
+<div id="rouletteView" class="view-page" style="display:none;">
+  <h2>🎯 Office Hours Roulette</h2>
+  <p style="margin-bottom:20px; color:#666;">
+    Connect instantly with alumni for 1:1 mentorship.
+  </p>
+  
+  <div id="alumniRoulette" style="display:none;">
+    <div class="card">
+      <h3>📡 Go Live</h3>
+      <p style="color:#666; font-size:12px; margin-bottom:10px;">
+        Paste your Google Meet or Zoom link below so students can join you.
+      </p>
+      
+      <div class="form-group">
+        <label class="form-label">Your Meeting Link</label>
+        <input id="alumniMeetLink" class="form-input" placeholder="https://meet.google.com/abc-xyz-123">
+      </div>
+      
+      <div class="form-group">
+        <label style="display:flex; align-items:center; gap:10px; cursor:pointer;">
+          <input type="checkbox" id="alumniLiveToggle" style="width:20px; height:20px;"> 
+          <strong>I am Online & Ready</strong>
+        </label>
+      </div>
 
-              <!-- Student: Find Alumni -->
-              <div id="studentRoulette" style="display:none;">
-                <h3>Join Office Hours</h3>
-                <input id="studentQuestion" class="form-input" placeholder="Your question">
-                <button id="btnFindAlumni" class="btn btn-primary full-width">Find Live Alumni</button>
-                <div id="rouletteStatus"></div>
-              </div>
-            </div>
-          </div>
+      <button id="btnUpdateLive" class="btn btn-primary full-width">
+        Update Status
+      </button>
+
+      <button id="btnStopLive" class="btn btn-danger full-width" style="display:none; margin-top:10px;">
+        🔴 END LIVE SESSION
+      </button>
+    </div>
+
+    <div class="card" style="margin-top:20px;">
+      <h3>⏳ Student Queue</h3>
+      <div id="alumniQueueContainer">
+        <p style="color:#999; text-align:center;">No students waiting yet.</p>
+      </div>
+    </div>
+  </div>
+
+  <div id="studentRoulette" style="display:none;">
+    
+    <div id="studentSearchArea">
+      
+      <div class="card" style="border-left: 4px solid var(--color-primary); margin-bottom:20px;">
+        <h3>📝 Step 1: Topic</h3>
+        <p style="color:#666; font-size:12px; margin-bottom:10px;">
+          What do you want to ask? (e.g. "Resume tips", "Career advice")
+        </p>
+        <input id="studentQuestion" class="form-input" placeholder="Type your topic here..." style="font-size:16px;">
+      </div>
+
+      <h3>📡 Step 2: Pick an Online Mentor</h3>
+      
+      <div id="liveAlumniContainer" style="min-height: 100px;">
+        <p style="text-align:center; padding:20px; color:#999;">
+          <span class="spinner" style="width:20px; height:20px; display:inline-block; border-width:2px;"></span>
+          Scanning for online alumni...
+        </p>
+      </div>
+
+    </div>
+
+    <div id="studentWaitingRoom" class="card" style="display:none; text-align:center;">
+      <div class="spinner" style="margin: 0 auto 20px auto;"></div>
+      <h3>You are in the queue!</h3>
+      <p id="waitingText" style="color:#666; margin-bottom:20px;">Please wait...</p>
+      
+      <div id="admissionTicket"></div>
+      
+      <button onclick="cancelRequest()" class="btn btn-danger btn-sm" style="margin-top:20px;">
+        Leave Queue
+      </button>
+    </div>
+
+  </div>
+</div>
 
           <!-- Chat View -->
 <div id="chatView" class="view-page" style="display:none;">
@@ -175,7 +231,7 @@
     <div id="privateChatControls">
       <label class="form-label">Select Recipient</label>
       <select id="chatSelect" class="form-control" style="margin-bottom: var(--space-16);">
-        <option value="">Select Alumni...</option>
+        <option value="">Select...</option>
       </select>
     </div>
 
