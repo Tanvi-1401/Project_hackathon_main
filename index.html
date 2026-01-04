@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🎓 BVM Alumni Connect Portal</title>
+  <link rel="stylesheet" href="styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Loading Screen -->
+    <div id="loadingScreen" class="loading-screen">
+      <div class="spinner"></div>
+      <p>Loading Alumni Portal...</p>
+    </div>
+
+    <!-- Header -->
+    <header class="header">
+      <h1>🎓 BVM Alumni Connect</h1>
+      <nav id="userNav" class="nav hidden">
+        <span id="userDisplay"></span>
+        <button id="btnLogout">Logout</button>
+      </nav>
+    </header>
+
+    <!-- AUTH SECTION -->
+    <section id="authSection" class="auth-section">
+    <div class="auth-card">
+
+  <div class="glass-strip"></div>
+
+  <h2 class="auth-title">Campus Connect</h2>
+  <p class="auth-subtitle">BVM Alumni Portal</p>
+
+  <div class="auth-tabs">
+    <button class="auth-tab active" onclick="switchTab('login')">Login</button>
+    <button class="auth-tab" onclick="switchTab('register')">Register</button>
+  </div>
+
+
+
+        <!-- Login Form -->
+        <div id="loginForm">
+          <div id="loginAlert"></div>
+          <input type="email" id="loginEmail" class="form-input" placeholder="Email">
+          <input type="password" id="loginPassword" class="form-input" placeholder="Password">
+          <select id="loginRole" class="form-input">
+            <option value="student">Student</option>
+            <option value="alumni">Alumni</option>
+            <option value="admin">Admin</option>
+          </select>
+          <button id="btnLogin" class="btn btn-primary full-width">Login</button>
+        </div>
+
+        <!-- Register Form -->
+        <div id="registerForm" style="display:none;">
+          <div id="registerAlert"></div>
+          <input type="text" id="regName" class="form-input" placeholder="Full Name">
+          <input type="email" id="regEmail" class="form-input" placeholder="Email">
+          <input type="password" id="regPassword" class="form-input" placeholder="Password">
+          <select id="regRole" class="form-input">
+            <option value="student">Student</option>
+            <option value="alumni">Alumni</option>
+          </select>
+
+          <!-- Alumni Fields -->
+          <div id="alumniRegFields" style="display:none;">
+            <input type="number" id="regGradYear" class="form-input" placeholder="Graduation Year">
+            <input type="text" id="regJobTitle" class="form-input" placeholder="Job Title">
+            <input type="text" id="regCompany" class="form-input" placeholder="Company">
+            <textarea id="regSkills" class="form-input" placeholder="Skills (comma separated)"></textarea>
+            <textarea id="regInterests" class="form-input" placeholder="Interests (comma separated)"></textarea>
+          </div>
+
+          <!-- Student Fields -->
+          <div id="studentRegFields" style="display:none;">
+            <input type="text" id="regCollegeId" class="form-input" placeholder="College ID">
+          </div>
+
+          <button id="btnRegister" class="btn btn-primary full-width">Register</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- MAIN CONTENT -->
+    <main id="mainContent" class="main-content hidden">
+      <div class="dashboard-grid">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+          <h3>Menu</h3>
+          <div id="sidebarMenu"></div>
+          <button id="btnLogoutSidebar" class="btn btn-outline full-width" style="margin-top:20px;">Logout</button>
+        </aside>
+
+        <!-- Main Panel -->
+        <div class="main-panel">
+          <!-- Feed View -->
+          <div id="feedView" class="view-page">
+            <h2>📋 Feed</h2>
+            <div id="filterSection" style="display:none;">
+              <div class="filter-card">
+                <input id="jobFilter" class="form-input" placeholder="Filter by Job Title" onkeyup="applyAlumniFilters()">
+                <input id="companyFilter" class="form-input" placeholder="Filter by Company" onkeyup="applyAlumniFilters()">
+                <input id="interestFilter" class="form-input" placeholder="Filter by Interest" onkeyup="applyAlumniFilters()">
+              </div>
+            </div>
+            <div id="feedContainer"></div>
+          </div>
+
+          <!-- Create Post View -->
+          <div id="createPostView" class="view-page" style="display:none;">
+            <h2>✍️ Create Post</h2>
+            <div class="card">
+              <div id="createPostAlert"></div>
+              <select id="postType" class="form-input">
+                <option value="job">Job</option>
+                <option value="internship">Internship</option>
+              </select>
+              <input id="postTitle" class="form-input" placeholder="Title">
+              <textarea id="postDesc" class="form-input" placeholder="Description"></textarea>
+              <button id="btnCreatePost" class="btn btn-primary full-width">Submit Post</button>
+            </div>
+          </div>
+
+          <!-- Alumni Profile View -->
+          <div id="profileView" class="view-page" style="display:none;">
+            <h2>👤 My Profile</h2>
+            <div class="card">
+              <div id="profileAlert"></div>
+              <input id="profName" class="form-input" placeholder="Full Name">
+              <input id="profJobTitle" class="form-input" placeholder="Job Title">
+              <input id="profCompany" class="form-input" placeholder="Company">
+              <textarea id="profSkills" class="form-input" placeholder="Skills (comma separated)"></textarea>
+              <textarea id="profInterests" class="form-input" placeholder="Interests (comma separated)"></textarea>
+              <button id="btnSaveProfile" class="btn btn-primary full-width">Save Profile</button>
+            </div>
+          </div>
+
+          <!-- Office Hours Roulette View -->
+          <div id="rouletteView" class="view-page" style="display:none;">
+            <h2>🎯 Office Hours Roulette</h2>
+            <div class="card">
+              <!-- Alumni: Go Live -->
+              <div id="alumniRoulette" style="display:none;">
+                <h3>Become Available</h3>
+                <label>
+                  <input type="checkbox" id="alumniLiveToggle">
+                  I'm Live for 5-min questions
+                </label>
+                <input id="alumniDefaultQuestion" class="form-input" placeholder="Default question hint">
+                <button id="btnUpdateLive" class="btn btn-primary full-width">Update Status</button>
+              </div>
+
+              <!-- Student: Find Alumni -->
+              <div id="studentRoulette" style="display:none;">
+                <h3>Join Office Hours</h3>
+                <input id="studentQuestion" class="form-input" placeholder="Your question">
+                <button id="btnFindAlumni" class="btn btn-primary full-width">Find Live Alumni</button>
+                <div id="rouletteStatus"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Chat View -->
+<div id="chatView" class="view-page" style="display:none;">
+  <h2>💬 Communications</h2>
+
+  <div class="chat-tabs">
+    <button id="btnPrivateTab" class="chat-tab active" onclick="switchChatMode('private')">Private Chat</button>
+    <button id="btnGroupTab" class="chat-tab" onclick="switchChatMode('group')">Global Group</button>
+  </div>
+
+  <div class="card">
+    <div id="privateChatControls">
+      <label class="form-label">Select Recipient</label>
+      <select id="chatSelect" class="form-control" style="margin-bottom: var(--space-16);">
+        <option value="">Select Alumni...</option>
+      </select>
+    </div>
+
+    <div id="chatMessages" class="chat-box"></div>
+
+    <div style="display:flex; gap:10px; margin-top: var(--space-16);">
+      <input id="chatInput" class="form-control" placeholder="Type your message..." style="flex:1;">
+      <button id="btnSendMessage" class="btn btn-primary">Send</button>
+    </div>
+  </div>
+</div>
+
+          <!-- Admin Verification View -->
+          <div id="adminView" class="view-page" style="display:none;">
+            <h2>👑 Admin Dashboard</h2>
+            <div class="card">
+              <h3>Pending Alumni</h3>
+              <div id="pendingAlumniList"></div>
+            </div>
+            <div class="card" style="margin-top:20px;">
+              <h3>Pending Posts</h3>
+              <div id="pendingPostsList"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- ✅ CORRECT FIREBASE SDK (Use this version) -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+
+  <!-- Your App JS -->
+  <script src="app.js"></script>
+</body>
+</html>
