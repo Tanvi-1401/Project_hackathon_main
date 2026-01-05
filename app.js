@@ -285,8 +285,10 @@ function updateSidebar() {
   }
 
   if (currentRole === 'student') {
-    addMenuItem('🎯 Office Hours', 'rouletteView');
-  }
+  addMenuItem('🤖 AI Assistant', 'aiChatView');
+  addMenuItem('🎯 Office Hours', 'rouletteView');
+}
+
 
   if (currentRole === 'admin') {
     addMenuItem('👑 Admin', 'adminView');
@@ -1368,4 +1370,64 @@ function setupPresence() {
       userStatusRef.set(isOnlineForDatabase);
     });
   });
+}
+// ==========================================
+// AI CHATBOT (GEMINI - STUDENT ONLY)
+// ==========================================
+
+const GEMINI_API_KEY = "AIzaSyDyV5ItA23lqOVNISKz-9AvTQv3xA1abqE";
+
+async function sendAIMessage() {
+  if (currentRole !== "student") return;
+
+  const input = document.getElementById("aiUserInput");
+  const chatBox = document.getElementById("aiChatMessages");
+  const userText = input.value.trim();
+  if (!userText) return;
+
+  // show user message
+  chatBox.innerHTML += `<div class="msg-sent"><p>${userText}</p></div>`;
+  input.value = "";
+
+  // typing indicator
+  const typing = document.createElement("div");
+  typing.className = "msg-received";
+  typing.innerHTML = "<p>AI is thinking...</p>";
+  chatBox.appendChild(typing);
+
+  try {
+    const res = await fetch(
+      `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          contents: [
+            {
+              role: "user",
+              parts: [{ text: userText }]
+            }
+          ]
+        })
+      }
+    );
+
+    const data = await res.json();
+    console.log("Gemini response:", data); // 👈 debug
+
+    typing.remove();
+
+    const aiReply =
+      data?.candidates?.[0]?.content?.parts
+        ?.map(p => p.text)
+        .join(" ")
+      || "No response from AI.";
+
+    chatBox.innerHTML += `<div class="msg-received"><p>${aiReply}</p></div>`;
+    chatBox.scrollTop = chatBox.scrollHeight;
+
+  } catch (err) {
+    console.error("Gemini error:", err);
+    typing.innerHTML = "<p style='color:red;'>AI failed</p>";
+  }
 }

@@ -137,6 +137,24 @@
             </div>
           </div>
 
+          <!-- AI Chatbot View (STUDENT ONLY) -->
+<div id="aiChatView" class="view-page" style="display:none;">
+  <h2>🤖 AI Career Assistant</h2>
+
+  <div class="card">
+    <div id="aiChatMessages" class="chat-box"></div>
+
+    <div style="display:flex; gap:10px; margin-top:16px;">
+      <input
+        id="aiUserInput"
+        class="form-control"
+        placeholder="Ask anything about career, resume, internships..."
+      />
+      <button class="btn btn-primary" onclick="sendAIMessage()">Ask</button>
+    </div>
+  </div>
+</div>
+
           <!-- Office Hours Roulette View -->
 <div id="rouletteView" class="view-page" style="display:none;">
   <h2>🎯 Office Hours Roulette</h2>
